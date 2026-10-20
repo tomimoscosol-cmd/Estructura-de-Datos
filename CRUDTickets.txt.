@@ -1,0 +1,104 @@
+publico Cola extraccionInformacionTicketsEspera(Archivo objA)
+  objA.abrirArchivoModoLectura("TicketsIngresados.txt")
+  entero cl = objA.contadorLineas("TicketsIngresados.txt")
+  Tickets[] vec = nuevo Tickets[cl]
+  vec = objA.leerTickets()
+  objA.cerrarModoLectura()
+
+  Cola colaEspera = nueva Cola()
+  para(entero i = 0; i < vec.tamaño; i++) haga
+    si(vec[i].obtenerEstado() == "en espera") entonces
+      colaEspera.push(vec[i])
+    finSi
+  finPara
+
+  retornar colaEspera
+finMetodo
+
+
+
+publico Pila extraccionInformacionTicketsAtendidos(Archivo objA)
+  objA.abrirArchivoModoLectura("TicketsIngresados.txt")
+  entero cl = objA.contadorLineas("TicketsIngresados.txt")
+  Tickets[] vec = nuevo Tickets[cl]
+  vec = objA.leerTickets()
+  objA.cerrarModoLectura()
+
+  entero contAtendidos = 0
+  para(entero i = 0; i < vec.tamaño; i++) haga
+    si(vec[i].obtenerEstado() == "atendido") entonces
+      contAtendidos++
+    finSi
+  finPara
+
+  Pila pilaAtendidos = nueva Pila(contAtendidos)
+  para(entero i = 0; i < vec.tamaño; i++) haga
+    si(vec[i].obtenerEstado() == "atendido") entonces
+      pilaAtendidos.push(vec[i])
+    finSi
+  finPara
+
+  retornar pilaAtendidos
+finMetodo
+
+
+
+publico vacio atencionTickets(Archivo objA, Cola c)
+  objA.abrirArchivoModoLectura("TicketsIngresados.txt")
+  entero cl = objA.contadorLineas("TicketsIngresados.txt")
+  Tickets[] vec = nuevo Tickets[cl]
+  vec = objA.leerTickets()
+  objA.cerrarModoLectura()
+
+  Tickets tk = nuevo Tickets()
+  mientras(c.isEmpty() == falso) haga
+    tk = (Tickets) c.pop()
+    tk.modificarEstado("atendido")
+
+    para(entero i = 0; i < vec.tamaño; i++) haga
+      si(vec[i].obtenerIdTicket() == tk.obtenerIdTicket()) entonces
+        vec[i] = tk
+      finSi
+    finPara
+
+    reescribirArchivo(objA, vec)
+  finMientras
+finMetodo
+
+
+
+publico vacio reescribirArchivo(Archivo objA, Tickets[] vec)
+  objA.eliminarArchivo("TicketsIngresados.txt")
+  objA.abrirModoEscritura("TicketsIngresados.txt")
+  para(entero i = 0; i < vec.tamaño; i++) haga
+    objA.escribir(vec[i].toString())
+  finPara
+  objA.cerrarModoEscritura()
+finMetodo
+
+
+publico Pila auditoriaTickets(Archivo objA, Pila p)
+  Cola colaNoCumple = nueva Cola()
+  Tickets tk = nuevo Tickets()
+  entero contNoCumple = 0
+
+  objA.abrirModoEscritura("auditados.txt")
+  mientras(p.isEmpty() == falso) haga
+    tk = (Tickets) p.pop()
+    si(tk.obtenerIdTicket() >= 1) y (tk.obtenerIdTicket() <= 50) entonces
+      objA.escribir(tk.toString())
+    sino
+      colaNoCumple.push(tk)
+      contNoCumple++
+    finSi
+  finMientras
+  objA.cerrarModoEscritura()
+
+  Pila pilaNoCumple = nueva Pila(contNoCumple)
+  mientras(colaNoCumple.isEmpty() == falso) haga
+    tk = (Tickets) colaNoCumple.pop()
+    pilaNoCumple.push(tk)
+  finMientras
+
+  retornar pilaNoCumple
+finMetodo
