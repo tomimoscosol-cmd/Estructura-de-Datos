@@ -1,0 +1,22 @@
+Clase principal
+publico clase AppMesaAyuda
+
+  publico estatico vacio main()
+    Archivo objA = nuevo Archivo()
+    CRUDTickets objCrud = nuevo CRUDTickets()
+
+    Cola colaEspera = objCrud.extraccionInformacionTicketsEspera(objA)
+    objCrud.atencionTickets(objA, colaEspera)
+
+    Pila pilaAtendidos = objCrud.extraccionInformacionTicketsAtendidos(objA)
+    Pila pilaNoCumple = objCrud.auditoriaTickets(objA, pilaAtendidos)
+
+    Tickets tk = nuevo Tickets()
+    escribir("Tickets pendientes de revision:")
+    mientras(pilaNoCumple.isEmpty() == falso) haga
+      tk = (Tickets) pilaNoCumple.pop()
+      escribir(tk.toString())
+    finMientras
+  finMetodo
+
+finClase
